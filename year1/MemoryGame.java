@@ -33,9 +33,11 @@ import java.lang.reflect.InvocationTargetException;
 
 public class MemoryGame extends Application {
     /** this stores the default number of rows in the board */
-    public static int numRows = 12;
+    private static int numRows = 12;
     /** this stores the default number of columns in the board */
-    public static int numColumns = 12;
+    private static int numColumns = 12;
+    /** this stores a boolean[][] that says if the button is flipped or not*/
+    private boolean[][] flipped = new boolean[numRows][numColumns];
     
     private final Color[] predefinedColors = {
     Color.rgb(64, 163, 63),
@@ -50,6 +52,14 @@ public class MemoryGame extends Application {
     private Button[][] buttons = null;
     
     Button button;
+    
+    public void defaultBoolean() {
+    		for(int i = 0; i < flipped.length; i++) {
+    			for(int j = 0; j < flipped[0].length; j++) {
+    				flipped[i][j] = false;
+    			}
+    		}
+    }
     
     public Color[] getPredefinedColors(){
         return predefinedColors;
@@ -126,6 +136,11 @@ public class MemoryGame extends Application {
                     gridPane.add(this.getButtons()[column][row], column, row);
                     
                     this.getButtons()[column][row].setOnAction(e ->{
+                    	/** this stores the clicked button instance */
+                        Button b = (Button)e.getSource();
+                        /** this stores the coordinate of the clicked button */
+                        int[] coordinate = this.locate(b);   
+                        
                     });
                 }
             }
@@ -139,9 +154,17 @@ public class MemoryGame extends Application {
     
     @Override
     public void start(Stage primaryStage) {
+    		defaultBoolean();
+    		primaryStage.setTitle("Memory Game");
         Scene scene = new Scene(this.setupPlayArea(12, 12, 3));
         primaryStage.setScene(scene);
         primaryStage.show();
+        for(int i = 0 ; i < flipped.length; i++) {
+        		for(int j = 0; j < flipped[0].length; j++) {
+        			System.out.print(flipped[i][j] + " ");
+        		}
+        		System.out.println();
+        }
     }
     
     public static void main(String[] args) {
