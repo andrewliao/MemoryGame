@@ -12,6 +12,8 @@ import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
+import javafx.scene.image.Image ;
+import javafx.scene.image.ImageView;
 
 public class MemoryGame extends Application {
 	/** this stores the default number of rows in the board */
@@ -31,11 +33,6 @@ public class MemoryGame extends Application {
 		
 		
 		GridPane layout = new GridPane();
-		for(int i = 0; i < 12; i++) {
-			for(int j = 0; j < 12; j++) {
-				layout.add(new Button("Row " + i +" and Column " + j), i, j);
-			}
-		}
 		
 		Scene scene = new Scene(layout);
 		primaryStage.setScene(scene);
