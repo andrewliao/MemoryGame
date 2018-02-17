@@ -29,4 +29,17 @@ public class GameMechanics  {
 		}
 		return finished;
 	}
+	
+	/** This method counts the number that is flipped */
+	public static int numberFlipped(boolean[][] flipped) {
+		int count = 0;
+		for(int i = 0; i < flipped.length; i++) {
+			for(int j = 0; j < flipped[0].length; j++) {
+				if(flipped[i][j] == true) {
+					count++;
+				}
+			}
+		}
+		return count;
+	}
 }
