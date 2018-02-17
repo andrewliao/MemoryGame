@@ -33,26 +33,35 @@ import java.lang.reflect.InvocationTargetException;
 
 public class MemoryGame extends Application {
     /** this stores the default number of rows in the board */
-    private static int numRows = 12;
+    private static int numRows = 4;
     /** this stores the default number of columns in the board */
-    private static int numColumns = 12;
+    private static int numColumns = 4;
     /** this stores a boolean[][] that says if the button is flipped or not*/
     private boolean[][] flipped = new boolean[numRows][numColumns];
+    /** this stores the index of the color arrays and how many times it was used*/
+    private int[][] colorIndex = new int[8][1];
+    /** this stores the hidden colors of the buttons */
+    private Color[][] buttonColor = new Color[4][4];
+    /** This is the default color when it is not flipped yet */
+    private final Color lightGrayColor = Color.rgb(225, 225, 225);
     
+    /** This stores the predifinedColors we can use */
     private final Color[] predefinedColors = {
     Color.rgb(64, 163, 63),
     Color.rgb(245, 152, 29),
     Color.rgb(252, 88, 52),
     Color.rgb(27, 114, 222),
     Color.rgb(203, 0, 78),
-    Color.rgb(137, 0, 160)
+    Color.rgb(137, 0, 160),
+    Color.rgb(114, 85, 73),
+    Color.rgb(66, 66, 66),
+    Color.rgb(58, 71, 78)
     };
     
     /** this stores buttons to be added to the game */
-    private Button[][] buttons = null;
+    private Button[][] buttons;
     
-    Button button;
-    
+    /** this sets up the default boolean[][] indicating whether or not something is flipped */
     public void defaultBoolean() {
     		for(int i = 0; i < flipped.length; i++) {
     			for(int j = 0; j < flipped[0].length; j++) {
@@ -61,9 +70,11 @@ public class MemoryGame extends Application {
     		}
     }
     
+    /** this method returns the array of the predefinedColors */
     public Color[] getPredefinedColors(){
         return predefinedColors;
     }
+    
     
     public void setButtons(Button[][] buttons){
         this.buttons = buttons;
@@ -111,7 +122,7 @@ public class MemoryGame extends Application {
              * this loop extracts colors from the predefined colors with the correct amount
              * subgoal: retrieve the predefined colors
              */
-            for (int i = 0; i < numColors; i ++){
+            for (int i = 0; i < numColors; i++){
                 colors[i] = this.getPredefinedColors()[i];
             }
             
@@ -121,6 +132,8 @@ public class MemoryGame extends Application {
              */
             for (int column = 0; column < intendedColumn; column ++){
                 for (int row = 0; row < intendedRow; row++){
+                		
+                		//filling all the buttons to be the default color of 
                     this.getButtons()[column][row] = new Button();
                     this.getButtons()[column][row].setPrefSize(50, 50);
                     
@@ -128,8 +141,19 @@ public class MemoryGame extends Application {
                     Rectangle rectangle = new Rectangle(50, 50);
                     rectangle.setArcHeight(15);
                     rectangle.setArcWidth(rectangle.getArcHeight());
-                    rectangle.setFill(colors[(int)(Math.random() * numColors)]);
+                    boolean colorFound = false;
+                    while(!colorFound) {
+                   		int indexOfColor = (int)(Math.random() * colorIndex.length);
+                   		if(colorIndex[indexOfColor][0] < 2) {
+                   			rectangle.setFill(lightGrayColor);
+                    			colorIndex[indexOfColor][0]++;
+                    			buttonColor[row][column] = colors[indexOfColor];
+                    				colorFound = true;
+                    	}
+                    			
+                  }
                     
+                   
                     this.getButtons()[column][row].setGraphic(rectangle);
                     this.getButtons()[column][row].setStyle("-fx-background-color: transparent");
                     
@@ -140,7 +164,7 @@ public class MemoryGame extends Application {
                         Button b = (Button)e.getSource();
                         /** this stores the coordinate of the clicked button */
                         int[] coordinate = this.locate(b);   
-                        
+                        ((Rectangle)b.getGraphic()).setFill(buttonColor[coordinate[0]][coordinate[1]]);
                     });
                 }
             }
@@ -156,12 +180,12 @@ public class MemoryGame extends Application {
     public void start(Stage primaryStage) {
     		defaultBoolean();
     		primaryStage.setTitle("Memory Game");
-        Scene scene = new Scene(this.setupPlayArea(12, 12, 3));
+        Scene scene = new Scene(this.setupPlayArea(4, 4, 8));
         primaryStage.setScene(scene);
         primaryStage.show();
         for(int i = 0 ; i < flipped.length; i++) {
         		for(int j = 0; j < flipped[0].length; j++) {
-        			System.out.print(flipped[i][j] + " ");
+        			System.out.print(buttonColor[i][j] + " ");
         		}
         		System.out.println();
         }
