@@ -25,7 +25,7 @@ public class GameMechanics  {
 						finished = true;
 					}
 				}
-			}dfkdlfkdlfkldf some bode
+			}
 		}
 		return finished;
 	}

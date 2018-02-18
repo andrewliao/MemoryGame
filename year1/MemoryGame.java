@@ -39,8 +39,6 @@ public class MemoryGame extends Application {
     private static int numRows = 4;
     /** this stores the default number of columns in the board */
     private static int numColumns = 4;
-    /** this stores a boolean[][] that says if the button is flipped or not*/
-    private boolean[][] flipped = new boolean[numRows][numColumns];
     /** thie stores a boolean[][] that checks if button is paired up and found */
     private boolean[][] pairedUp = new boolean[numRows][numColumns];
     /** this stores the index of the color arrays and how many times it was used*/
@@ -73,15 +71,7 @@ public class MemoryGame extends Application {
 
 
 
-    /** this sets up the default boolean[][] indicating whether or not something is flipped */
-
-    public void defaultFlipped() {
-    		for(int i = 0; i < flipped.length; i++) {
-    			for(int j = 0; j < flipped[0].length; j++) {
-    				flipped[i][j] = false;
-    			}
-    		}
-    }
+ 
     
     /** this sets up the default boolean[][] indicating whether or not something is pairedUp */
     public void defaultPairedUp() {
@@ -92,15 +82,6 @@ public class MemoryGame extends Application {
     		}
     }
     
-
-    /** this sets the default boolean[][] indicating that it is not flipped */
-    public void defaultBoolean() {
-        for(int i = 0; i < flipped.length; i++) {
-            for(int j = 0; j < flipped[0].length; j++) {
-                flipped[i][j] = false;
-            }
-        }
-    }
 
     /** setter method of buttons flipped */
     public void setNumberOfButtonFlipped(int number){
@@ -236,7 +217,9 @@ public class MemoryGame extends Application {
                         Button b = (Button)e.getSource();
                         /** this stores the coordinate of the clicked button */
                         int[] coordinate = this.locate(b);
-                        
+                        if(pairedUp[coordinate[0]][coordinate[1]]) {
+                        		return;
+                        }
                   
                        
                        /** this is to add coordinates of button when there is only one clicked */
@@ -254,6 +237,8 @@ public class MemoryGame extends Application {
                         		/** this is when two buttons are clicked */
                         	//if match -> permanently flip them
                             if (this.compare(coordinate)){
+                            		pairedUp[coordinate[0]][coordinate[1]] = true;
+                            		pairedUp[getCoordinateToCheck()[0]][getCoordinateToCheck()[1]] = true;
                                 ((Rectangle)b.getGraphic()).setFill(buttonColor[coordinate[0]][coordinate[1]]);
                                 turnEnded = true;
                                 this.setNumberOfButtonFlipped(this.getNumberOfButtonFlipped() + 1);
@@ -278,16 +263,13 @@ public class MemoryGame extends Application {
                             			   
       
                             			   //find the first button, gets its rectangle and resets its color back to light gray
-                            			  ((Rectangle)getButtons()[getCoordinateToCheck()[0]][getCoordinateToCheck()[1]].getGraphic()).setFill(getLightGrayColor());
-                            			  
-                            			   System.out.println("kefan did a great job");
-                            			   //MY TURN HAS ENDED, I CAN FLIP NOW.
-                            			   //UNTIL MY TURN HAS ENDED, AFTER 2 SECONDS, I CANNOT FLIP.
+                            			  ((Rectangle)getButtons()[getCoordinateToCheck()[0]][getCoordinateToCheck()[1]].getGraphic()).setFill(getLightGrayColor());                          			  
+                                      
                             			   turnEnded = true;
                             		   }
                             		
                             		   
-                            	   }, 2 * 1000);
+                            	   }, (long)(0.5 * 1000));
                                    
                                                    
                     //for first turn, the value will be 0
@@ -315,21 +297,13 @@ public class MemoryGame extends Application {
     @Override
     public void start(Stage primaryStage) {
 
-    		defaultFlipped();
     		defaultPairedUp();
     		primaryStage.setTitle("Memory Game");
-
-        defaultBoolean();
         primaryStage.setTitle("Memory Game");
         Scene scene = new Scene(this.setupPlayArea(4, 4, 8));
         primaryStage.setScene(scene);
         primaryStage.show();
-        for(int i = 0 ; i < flipped.length; i++) {
-            for(int j = 0; j < flipped[0].length; j++) {
-                System.out.print(buttonColor[i][j] + " ");
-            }
-            System.out.println();
-        }
+ 
     }
 
     public static void main(String[] args) {
