@@ -3,12 +3,14 @@ package year1;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Paint;
@@ -26,6 +28,9 @@ import javafx.event.ActionEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
+
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.Timer;
@@ -61,6 +66,9 @@ public class MemoryGame extends Application {
     private final Color lightGrayColor = Color.rgb(225, 225, 225);
     private boolean turnEnded = false;
     private boolean firstTurn = true;
+    
+    final WebView browser = new WebView();
+    final WebEngine webEngine = browser.getEngine();
 
     /** This stores the predifinedColors we can use */
     private final Color[] predefinedColors = {
@@ -165,6 +173,7 @@ public class MemoryGame extends Application {
     public GridPane setupPlayArea(int intendedColumn, int intendedRow, int numColors){
         /** this stores the grid pane where all buttons are placed on */
         GridPane gridPane = new GridPane();
+        gridPane.setStyle("-fx-background-color: #C0C0C0");
         try{
             this.setButtons(new Button[intendedColumn][intendedRow]);
 
@@ -220,10 +229,10 @@ public class MemoryGame extends Application {
                     /** creating the button on action */
                     this.getButtons()[column][row].setOnAction(e ->{
                     	
-                    	
+
                     	
                     		if(GameMechanics.boardCorrect(pairedUp)) {
-                    			PlayWavFile.playwav("/Users/andrewliao/code/hackcrwu/year1/cheering.wav");
+                    			PlayWavFile.playwav("/Users/andrewliao/code/hackcrwu/year1/Illuminati Confirmed Sound Effect (online-audio-converter.com).wav");
                     			System.exit(1);
                     			
                     		}
@@ -245,7 +254,7 @@ public class MemoryGame extends Application {
                             this.setNumberOfButtonFlipped(this.getNumberOfButtonFlipped() + 1);
                             ((Rectangle)b.getGraphic()).setFill(buttonColor[coordinate[0]][coordinate[1]]); //flip first button
                             this.setCoordinateToCheck(coordinate); //record the coordinate of first button   
-             
+                            webEngine.loadContent("<b>Choose another tile!<b>");
                         }
                         if(coordinate[0] == getCoordinateToCheck()[0] && coordinate[1] == getCoordinateToCheck()[1]) {
                         		return;
@@ -260,9 +269,16 @@ public class MemoryGame extends Application {
                                 ((Rectangle)b.getGraphic()).setFill(buttonColor[coordinate[0]][coordinate[1]]);
                                 turnEnded = true;
                                 this.setNumberOfButtonFlipped(this.getNumberOfButtonFlipped() + 1);
+                                Timer timer = new Timer();
+                                timer.schedule(new TimerTask() {
+                                		@Override
+                                		public void run() {
+                                			PlayWavFile.playwav("/Users/andrewliao/code/hackcrwu/year1/coin_flip.wav");
+                                		}
+                                }, (long)(0.1 * 1000));
+                                webEngine.loadContent("<b>Finally! You got a pair.<b>");
                                 if(GameMechanics.boardCorrect(pairedUp)) {
-                        			System.out.println("Congrats player you saved the world!");
-                        			
+                                	webEngine.loadContent("<b>Congrats...You totally made my day<b>");
                         			
                                 }
                             }
@@ -270,7 +286,7 @@ public class MemoryGame extends Application {
                             
                             else{
                                 this.setNumberOfButtonFlipped(this.getNumberOfButtonFlipped() + 1);
-
+                                webEngine.loadContent("<b>lol Choose Again!<b>");
                             	   Timer timer = new Timer();
                             	   //setting the second button and showing its color
                             	   ((Rectangle)b.getGraphic()).setFill(buttonColor[coordinate[0]][coordinate[1]]);
@@ -291,10 +307,12 @@ public class MemoryGame extends Application {
                             			  ((Rectangle)getButtons()[getCoordinateToCheck()[0]][getCoordinateToCheck()[1]].getGraphic()).setFill(getLightGrayColor());                          			  
                                       
                             			   turnEnded = true;
+                            			   
                             		   }
                             		
+                            		  
                             		   
-                            	   }, (long)(0.5 * 1000));
+                            	   }, (long)(0.1 * 1000));
                                    
                                                    
                     //for first turn, the value will be 0
@@ -304,6 +322,7 @@ public class MemoryGame extends Application {
                     
                     //AFTER 2 SECONDS, THEN CAN YOU FLIP
                     //
+                            	   webEngine.loadContent("<b>NEXT MOVE!<b>");
                     
                             }
                         }
@@ -321,12 +340,26 @@ public class MemoryGame extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+    	primaryStage.setWidth(500);
+     primaryStage.setHeight(500);
+        Scene scene = new Scene(new Group());
     
+        VBox root = new VBox();     
+ 
+      
+        
+        webEngine.load("https://www.google.com");
+        GridPane gridPane = this.setupPlayArea(4, 4, 8);
+        webEngine.loadContent("<p>You are playing the Matching Memory Game... Good Luck!</p>");
+         
+        root.getChildren().addAll(gridPane, browser);
+        scene.setRoot(root);
+ 
+  
+    	
 
     		defaultPairedUp();
     		primaryStage.setTitle("Memory Game");
-        primaryStage.setTitle("Memory Game");
-        Scene scene = new Scene(this.setupPlayArea(4, 4, 8));
         primaryStage.setScene(scene);
         primaryStage.show();
        
@@ -334,8 +367,8 @@ public class MemoryGame extends Application {
     }
 
     public static void main(String[] args) {
-    
-    				Application.launch(args);
+    		PlayWavFile.playwav("/Users/andrewliao/code/hackcrwu/year1/lets-get-ready-to-rumble (online-audio-converter.com) (1).wav");
+    		Application.launch(args);
     		
     }
     
