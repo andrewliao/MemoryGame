@@ -225,6 +225,10 @@ public class MemoryGame extends Application {
 
                     gridPane.add(this.getButtons()[column][row], column, row);
 
+                    
+                    
+                    
+                    
                     /** creating the button on action */
                     this.getButtons()[column][row].setOnAction(e ->{
 
@@ -238,19 +242,22 @@ public class MemoryGame extends Application {
                        /** this is to add coordinates of button when there is only one clicked */
                         if (turnEnded || firstTurn){
                          	turnEnded = false;
+                         	if (firstTurn) {
                          	firstTurn = false;
+                         	}
                             this.setNumberOfButtonFlipped(this.getNumberOfButtonFlipped() + 1);
                             ((Rectangle)b.getGraphic()).setFill(buttonColor[coordinate[0]][coordinate[1]]); //flip first button
                             this.setCoordinateToCheck(coordinate); //record the coordinate of first button
                         }
                         else if(this.getNumberOfButtonFlipped() % 2 != 0 ){
-                            firstTurn = false;
 
                         		/** this is when two buttons are clicked */
                         	//if match -> permanently flip them
                             if (this.compare(coordinate)){
                                 ((Rectangle)b.getGraphic()).setFill(buttonColor[coordinate[0]][coordinate[1]]);
                                 turnEnded = true;
+                                this.setNumberOfButtonFlipped(this.getNumberOfButtonFlipped() + 1);
+
                             }
                          //if no match -> wait and then flip back
                             else{
