@@ -31,11 +31,11 @@ public class GameMechanics  {
 	}
 	
 	/** This method counts the number that is flipped */
-	public static int numberFlipped(boolean[][] flipped) {
+	public static int numberFlipped(boolean[][] flipped, boolean[][] pairedUp) {
 		int count = 0;
 		for(int i = 0; i < flipped.length; i++) {
 			for(int j = 0; j < flipped[0].length; j++) {
-				if(flipped[i][j] == true) {
+				if(flipped[i][j] == true && pairedUp[i][j] != true) {
 					count++;
 				}
 			}

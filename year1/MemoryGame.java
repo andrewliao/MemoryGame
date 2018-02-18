@@ -38,6 +38,8 @@ public class MemoryGame extends Application {
     private static int numColumns = 4;
     /** this stores a boolean[][] that says if the button is flipped or not*/
     private boolean[][] flipped = new boolean[numRows][numColumns];
+    /** thie stores a boolean[][] that checks if button is paired up and found */
+    private boolean[][] pairedUp = new boolean[numRows][numColumns];
     /** this stores the index of the color arrays and how many times it was used*/
     private int[][] colorIndex = new int[8][1];
     /** this stores the hidden colors of the buttons */
@@ -62,10 +64,19 @@ public class MemoryGame extends Application {
     private Button[][] buttons;
     
     /** this sets up the default boolean[][] indicating whether or not something is flipped */
-    public void defaultBoolean() {
+    public void defaultFlipped() {
     		for(int i = 0; i < flipped.length; i++) {
     			for(int j = 0; j < flipped[0].length; j++) {
     				flipped[i][j] = false;
+    			}
+    		}
+    }
+    
+    /** this sets up the default boolean[][] indicating whether or not something is pairedUp */
+    public void defaultPairedUp() {
+    		for(int i = 0; i < pairedUp.length; i++) {
+    			for(int j = 0; j < pairedUp[0].length; j++) {
+    				pairedUp[i][j] = false;
     			}
     		}
     }
@@ -164,7 +175,19 @@ public class MemoryGame extends Application {
                         Button b = (Button)e.getSource();
                         /** this stores the coordinate of the clicked button */
                         int[] coordinate = this.locate(b);   
-                        ((Rectangle)b.getGraphic()).setFill(buttonColor[coordinate[0]][coordinate[1]]);
+                        /** fill the button with a color once we click on it */
+                        ((Rectangle)b.getGraphic()).setFill(buttonColor[coordinate[1]][coordinate[0]]);
+                        /** when we click it we need to change the boolean */
+                        GameMechanics.flip(flipped, coordinate[1], coordinate[0]);
+                        for(int i = 0 ; i < flipped.length; i++) {
+                    		for(int j = 0; j < flipped[0].length; j++) {
+                    			System.out.print(flipped[i][j] + " ");
+                    		}
+                    		System.out.println();
+                    }
+                        ((Rectangle)b.getGraphic()).setFill(lightGrayColor);
+                        System.out.println();
+                        
                     });
                 }
             }
@@ -178,7 +201,8 @@ public class MemoryGame extends Application {
     
     @Override
     public void start(Stage primaryStage) {
-    		defaultBoolean();
+    		defaultFlipped();
+    		defaultPairedUp();
     		primaryStage.setTitle("Memory Game");
         Scene scene = new Scene(this.setupPlayArea(4, 4, 8));
         primaryStage.setScene(scene);
