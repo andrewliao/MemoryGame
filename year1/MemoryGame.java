@@ -26,6 +26,9 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import javax.swing.JOptionPane;
 import javafx.scene.layout.BorderPane;
 import javafx.animation.Animation;
@@ -48,10 +51,12 @@ public class MemoryGame extends Application {
     private int[] coordinateTocheck;
     /** count of buttons flipped */
     private int numberOfButtonFlipped = 0;
-
+    /** this stores buttons to be added to the game */
+    private Button[][] buttons;
     /** This is the default color when it is not flipped yet */
     private final Color lightGrayColor = Color.rgb(225, 225, 225);
-
+    private boolean turnEnded = false;
+    private boolean firstTurn = true;
 
     /** This stores the predifinedColors we can use */
     private final Color[] predefinedColors = {
@@ -66,8 +71,7 @@ public class MemoryGame extends Application {
             Color.rgb(58, 71, 78)
     };
 
-    /** this stores buttons to be added to the game */
-    private Button[][] buttons;
+
 
     /** this sets up the default boolean[][] indicating whether or not something is flipped */
 
@@ -132,6 +136,11 @@ public class MemoryGame extends Application {
     public Button[][] getButtons(){
         return this.buttons;
     }
+    
+    /** getter method of light gray color */
+    public Color getLightGrayColor() {
+    		return this.lightGrayColor;
+    }
 
     /** locates the coordinate of the button */
     public int[] locate(Button b){
@@ -188,6 +197,7 @@ public class MemoryGame extends Application {
              */
             for (int column = 0; column < intendedColumn; column ++){
                 for (int row = 0; row < intendedRow; row++){
+                		
 
                     //filling all the buttons to be the default color of
                     this.getButtons()[column][row] = new Button();
@@ -217,23 +227,68 @@ public class MemoryGame extends Application {
 
                     /** creating the button on action */
                     this.getButtons()[column][row].setOnAction(e ->{
-                        this.setNumberOfButtonFlipped(this.getNumberOfButtonFlipped()+1);
 
                         /** this stores the clicked button instance */
                         Button b = (Button)e.getSource();
                         /** this stores the coordinate of the clicked button */
-                        int[] coordinate = this.locate(b);   
+                        int[] coordinate = this.locate(b);
                         
-                       /** once you have 2 buttons flipped you will compare the button coordinates  */
-                        if (this.getNumberOfButtonFlipped() % 2 != 0){
-                            ((Rectangle)b.getGraphic()).setFill(buttonColor[coordinate[0]][coordinate[1]]);
-                            this.setCoordinateToCheck(coordinate);
-                        }else{
-                        		/** add the button to be compared coordinates*/
+                  
+                       
+                       /** this is to add coordinates of button when there is only one clicked */
+                        if (turnEnded || firstTurn){
+                         	turnEnded = false;
+                         	firstTurn = false;
+                            this.setNumberOfButtonFlipped(this.getNumberOfButtonFlipped() + 1);
+                            ((Rectangle)b.getGraphic()).setFill(buttonColor[coordinate[0]][coordinate[1]]); //flip first button
+                            this.setCoordinateToCheck(coordinate); //record the coordinate of first button
+                        }
+                        else if(this.getNumberOfButtonFlipped() % 2 != 0 ){
+                            firstTurn = false;
+
+                        		/** this is when two buttons are clicked */
+                        	//if match -> permanently flip them
                             if (this.compare(coordinate)){
                                 ((Rectangle)b.getGraphic()).setFill(buttonColor[coordinate[0]][coordinate[1]]);
-                            }else{
-                                this.setNumberOfButtonFlipped(this.getNumberOfButtonFlipped() - 1);
+                                turnEnded = true;
+                            }
+                         //if no match -> wait and then flip back
+                            else{
+                            	   Timer timer = new Timer();
+                            	   //setting the second button and showing its color
+                            	   ((Rectangle)b.getGraphic()).setFill(buttonColor[coordinate[0]][coordinate[1]]);
+                            	   
+                            	   timer.schedule(new TimerTask() {
+                          
+                            		   @Override
+                            		   public void run() {
+                            			   //flipping second button to gray color
+                            			   ((Rectangle)b.getGraphic()).setFill(getLightGrayColor());
+                            			   
+                            			   
+      
+                            			   //find the first button, gets its rectangle and resets its color back to light gray
+                            			  ((Rectangle)getButtons()[getCoordinateToCheck()[0]][getCoordinateToCheck()[1]].getGraphic()).setFill(getLightGrayColor());
+                            			  
+                            			   System.out.println("kefan did a great job");
+                            			   //MY TURN HAS ENDED, I CAN FLIP NOW.
+                            			   //UNTIL MY TURN HAS ENDED, AFTER 2 SECONDS, I CANNOT FLIP.
+                            			   turnEnded = true;
+                            		   }
+                            		
+                            		   
+                            	   }, 2 * 1000);
+                                   
+                                this.setNumberOfButtonFlipped(this.getNumberOfButtonFlipped() + 1);
+                                                   
+                    //for first turn, the value will be 0
+                    //IN ORDER FOR YOU TO START YOUR FIRST TURN, IT WILL BE 0, OR EVEN
+                    //each turn, on the first flip, the value will be odd
+                    //each turn, on the second flip, the value will be even
+                    
+                    //AFTER 2 SECONDS, THEN CAN YOU FLIP
+                    //
+                    
                             }
                         }
 
