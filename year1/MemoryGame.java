@@ -212,7 +212,10 @@ public class MemoryGame extends Application {
                     
                     /** creating the button on action */
                     this.getButtons()[column][row].setOnAction(e ->{
-
+                    		
+                    		if(GameMechanics.boardCorrect(pairedUp)) {
+                    			System.exit(1);
+                    		}
                         /** this stores the clicked button instance */
                         Button b = (Button)e.getSource();
                         /** this stores the coordinate of the clicked button */
@@ -222,7 +225,7 @@ public class MemoryGame extends Application {
                         }
                   
                        
-                       /** this is to add coordinates of button when there is only one clicked */
+                       /** this is to add coordinates of button when there is none clicked */
                         if (turnEnded || firstTurn){
                          	turnEnded = false;
                          	if (firstTurn) {
@@ -231,6 +234,10 @@ public class MemoryGame extends Application {
                             this.setNumberOfButtonFlipped(this.getNumberOfButtonFlipped() + 1);
                             ((Rectangle)b.getGraphic()).setFill(buttonColor[coordinate[0]][coordinate[1]]); //flip first button
                             this.setCoordinateToCheck(coordinate); //record the coordinate of first button
+                            System.out.println("When only none is clicked");
+                        }
+                        if(coordinate[0] == getCoordinateToCheck()[0] && coordinate[1] == getCoordinateToCheck()[1]) {
+                        		return;
                         }
                         else if(this.getNumberOfButtonFlipped() % 2 != 0 ){
 
@@ -239,14 +246,22 @@ public class MemoryGame extends Application {
                             if (this.compare(coordinate)){
                             		pairedUp[coordinate[0]][coordinate[1]] = true;
                             		pairedUp[getCoordinateToCheck()[0]][getCoordinateToCheck()[1]] = true;
+                            		
+                            		System.out.print(coordinate[0] + " " + coordinate[1]);
+                            		System.out.println("    " + getCoordinateToCheck()[0] + " " + getCoordinateToCheck()[1]);
                                 ((Rectangle)b.getGraphic()).setFill(buttonColor[coordinate[0]][coordinate[1]]);
                                 turnEnded = true;
                                 this.setNumberOfButtonFlipped(this.getNumberOfButtonFlipped() + 1);
+                                System.out.println("Pair");
+                                if(GameMechanics.boardCorrect(pairedUp)) {
+                        			System.out.println("Congrats kef");
+                        		}
 
                             }
                          //if no match -> wait and then flip back
                             
                             else{
+                            	System.out.println("No mathc");
                                 this.setNumberOfButtonFlipped(this.getNumberOfButtonFlipped() + 1);
 
                             	   Timer timer = new Timer();
