@@ -1,5 +1,6 @@
 package year1;
 
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -31,6 +32,7 @@ import java.util.NoSuchElementException;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.net.*;
+import javafx.scene.image.ImageView;
 
 import javax.swing.JOptionPane;
 import javafx.scene.layout.BorderPane;
@@ -40,7 +42,7 @@ import java.applet.Applet;
 import java.applet.AudioClip;
 import java.lang.reflect.InvocationTargetException;
 
-public class MemoryGame extends Application {
+public class PictureGame extends Application {
     /** this stores the default number of rows in the board */
     private static int numRows = 4;
     /** this stores the default number of columns in the board */
@@ -63,16 +65,15 @@ public class MemoryGame extends Application {
     private boolean firstTurn = true;
 
     /** This stores the predifinedColors we can use */
-    private final Color[] predefinedColors = {
-            Color.rgb(64, 163, 63),
-            Color.rgb(245, 152, 29),
-            Color.rgb(252, 88, 52),
-            Color.rgb(27, 114, 222),
-            Color.rgb(203, 0, 78),
-            Color.rgb(137, 0, 160),
-            Color.rgb(114, 85, 73),
-            Color.rgb(66, 66, 66),
-            Color.rgb(58, 71, 78)
+    private final Image[] predifinedImages = {
+            Image image1 = new Image("920x920"),
+            Image image2 = new Image("140162787"),
+            Image image3 = new Image("140210152658-20-biracial-horizontal-large-gallery"),
+            Image image4 = new Image("Famous-People-from-Florida-Ariana-Grande"),
+            Image image5 = new Image("image-title1"),
+            Image image6 = new Image("Marilyn-Monroe-805x1024"),
+            Image image7 = new Image("Natalie-Portman-Talks-Motherhood"),
+            Image image8 = new Image("trump")
     };
 
 
@@ -223,9 +224,7 @@ public class MemoryGame extends Application {
                     	
                     	
                     		if(GameMechanics.boardCorrect(pairedUp)) {
-                    			PlayWavFile.playwav("/Users/andrewliao/code/hackcrwu/year1/cheering.wav");
                     			System.exit(1);
-                    			
                     		}
                         /** this stores the clicked button instance */
                         Button b = (Button)e.getSource();
@@ -244,8 +243,7 @@ public class MemoryGame extends Application {
                          	}
                             this.setNumberOfButtonFlipped(this.getNumberOfButtonFlipped() + 1);
                             ((Rectangle)b.getGraphic()).setFill(buttonColor[coordinate[0]][coordinate[1]]); //flip first button
-                            this.setCoordinateToCheck(coordinate); //record the coordinate of first button   
-             
+                            this.setCoordinateToCheck(coordinate); //record the coordinate of first button                    
                         }
                         if(coordinate[0] == getCoordinateToCheck()[0] && coordinate[1] == getCoordinateToCheck()[1]) {
                         		return;
@@ -260,11 +258,11 @@ public class MemoryGame extends Application {
                                 ((Rectangle)b.getGraphic()).setFill(buttonColor[coordinate[0]][coordinate[1]]);
                                 turnEnded = true;
                                 this.setNumberOfButtonFlipped(this.getNumberOfButtonFlipped() + 1);
+
                                 if(GameMechanics.boardCorrect(pairedUp)) {
                         			System.out.println("Congrats player you saved the world!");
-                        			
-                        			
-                                }
+                        		}
+
                             }
                          //if no match -> wait and then flip back
                             
@@ -274,14 +272,11 @@ public class MemoryGame extends Application {
                             	   Timer timer = new Timer();
                             	   //setting the second button and showing its color
                             	   ((Rectangle)b.getGraphic()).setFill(buttonColor[coordinate[0]][coordinate[1]]);
-                            		
+                            	   
                             	   timer.schedule(new TimerTask() {
                           
                             		   @Override
                             		   public void run() {
-                       
-                            			   System.out.println();
-                                           PlayWavFile.playwav("/Users/andrewliao/code/hackcrwu/year1/buzzer_x.wav");
                             			   //flipping second button to gray color
                             			   ((Rectangle)b.getGraphic()).setFill(getLightGrayColor());
                             			   
@@ -334,7 +329,7 @@ public class MemoryGame extends Application {
     }
 
     public static void main(String[] args) {
-    
+
     				Application.launch(args);
     		
     }
