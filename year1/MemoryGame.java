@@ -260,7 +260,10 @@ public class MemoryGame extends Application {
 
                             }
                          //if no match -> wait and then flip back
+                            
                             else{
+                                this.setNumberOfButtonFlipped(this.getNumberOfButtonFlipped() + 1);
+
                             	   Timer timer = new Timer();
                             	   //setting the second button and showing its color
                             	   ((Rectangle)b.getGraphic()).setFill(buttonColor[coordinate[0]][coordinate[1]]);
@@ -286,7 +289,6 @@ public class MemoryGame extends Application {
                             		   
                             	   }, 2 * 1000);
                                    
-                                this.setNumberOfButtonFlipped(this.getNumberOfButtonFlipped() + 1);
                                                    
                     //for first turn, the value will be 0
                     //IN ORDER FOR YOU TO START YOUR FIRST TURN, IT WILL BE 0, OR EVEN
